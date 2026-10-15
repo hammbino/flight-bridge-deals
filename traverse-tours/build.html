@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Deal link builder | Traverse Tours</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500&family=Instrument+Sans:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="build.js"></script>
+</head>
+<body>
+  <header class="band">
+    <img src="assets/traverse-logo.png" alt="Traverse Tours">
+  </header>
+  <main>
+    <h1>Make a Book Now link</h1>
+    <p class="intro">Fill in this week's deal. The link updates as you type. Test it before it goes in an email.</p>
+
+    <form id="builder">
+      <div class="field">
+        <label for="type">Kind of deal</label>
+        <select id="type">
+          <option value="flight">Flight</option>
+          <option value="package">Package</option>
+        </select>
+      </div>
+      <div class="field" id="title-row" hidden>
+        <label for="title">Short title (shown on the page)</label>
+        <input type="text" id="title" maxlength="80" placeholder="Cancun Black Friday">
+      </div>
+      <div class="field">
+        <label for="from">From airport code</label>
+        <input type="text" id="from" maxlength="3" placeholder="SLC" autocapitalize="characters">
+      </div>
+      <div class="field">
+        <label for="to">To airport code</label>
+        <input type="text" id="to" maxlength="3" placeholder="CUN" autocapitalize="characters">
+      </div>
+      <div class="field">
+        <label for="depart">Depart date</label>
+        <input type="date" id="depart">
+      </div>
+      <div class="field">
+        <label for="return">Return date (leave empty for one way)</label>
+        <input type="date" id="return">
+      </div>
+      <div class="field">
+        <label for="price">Price per person, USD (numbers only)</label>
+        <input type="text" id="price" inputmode="decimal" placeholder="289">
+      </div>
+      <div class="field">
+        <label for="found">Date the price was found</label>
+        <input type="date" id="found">
+      </div>
+    </form>
+
+    <div class="error" id="problems" hidden></div>
+
+    <div id="result" hidden>
+      <p class="link-out" id="link"></p>
+      <button type="button" id="copy">Copy link</button>
+      <p class="note"><a id="open" href="#" target="_blank" rel="noopener">Open the link to check it</a></p>
+    </div>
+  </main>
+</body>
+</html>
