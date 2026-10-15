@@ -73,6 +73,8 @@ async function submit(event) {
   const button = $("send");
   button.disabled = true;
   button.textContent = "Sending...";
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 20000);
   try {
     const payload = buildPayload({
       accessKey: WEB3FORMS_KEY,
@@ -86,6 +88,7 @@ async function submit(event) {
       method: "POST",
       headers: { "Content-Type": "application/json", Accept: "application/json" },
       body: JSON.stringify(payload),
+      signal: controller.signal,
     });
     const result = await response.json();
     if (!response.ok || !result.success) throw new Error(result.message || String(response.status));
@@ -96,9 +99,15 @@ async function submit(event) {
     window.scrollTo(0, 0);
   } catch (error) {
     console.error("Book Now send failed:", error);
-    showError(`Something went wrong and your request was not sent. Please try again, or email us at ${INBOX}.`);
+    if (error && error.name === "AbortError") {
+      showError(`We could not confirm your request was sent. Please email us at ${INBOX} so nothing gets missed.`);
+    } else {
+      showError(`Something went wrong and your request was not sent. Please try again, or email us at ${INBOX}.`);
+    }
     button.disabled = false;
     button.textContent = "Send my request";
+  } finally {
+    clearTimeout(timer);
   }
 }
 

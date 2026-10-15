@@ -127,7 +127,7 @@ export function buildPayload({ accessKey, deal, form, link, leadWords, honeypot 
     "Dates are different": newDepart ? `Yes: ${formatRangeWithYear(newDepart, newReturn || null)}` : "No",
     "Anything else": form.message || "(nothing)",
     "Link they came from": link,
-    botcheck: honeypot,
+    ...(honeypot ? { botcheck: true } : {}),
   };
 }
 

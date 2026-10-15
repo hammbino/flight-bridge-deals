@@ -115,8 +115,14 @@ test("buildPayload carries every field and the full link", () => {
   assert.equal(p["Travelers"], "2");
   assert.equal(p["Deal ID"], "2026-11-slc-cun");
   assert.ok(p["Link they came from"].endsWith(FULL));
-  assert.equal(p.botcheck, false);
+  assert.equal("botcheck" in p, false);
   assert.equal(JSON.stringify(p).toLowerCase().includes("phone"), false);
+});
+
+test("buildPayload sends botcheck true only when the honeypot is checked", () => {
+  const form = { name: "Bot", email: "b@example.com", travelers: "1", datesDifferent: false, newDepart: "", newReturn: "", message: "" };
+  const p = buildPayload({ accessKey: "KEY", deal: null, form, link: "https://x/", leadWords: "", honeypot: true });
+  assert.equal(p.botcheck, true);
 });
 
 test("buildPayload with new dates and no deal", () => {
