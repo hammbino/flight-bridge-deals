@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Book this deal | Traverse Tours</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500&family=Instrument+Sans:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="page.js"></script>
+</head>
+<body>
+  <header class="band">
+    <img src="assets/traverse-logo.png" alt="Traverse Tours">
+  </header>
+
+  <main>
+    <section id="request">
+      <h1 id="title">Book this deal</h1>
+      <p class="intro">Tell us who's traveling. A Traverse agent will email you to confirm the trip and the price. Nothing is booked or charged yet.</p>
+
+      <div class="deal" id="deal">
+        <p class="deal-route" id="deal-route"></p>
+        <p class="deal-dates" id="deal-dates"></p>
+        <p class="deal-price" id="deal-price"></p>
+      </div>
+
+      <form id="form">
+        <div class="error" id="error" role="alert" hidden></div>
+
+        <div class="field">
+          <label for="travelers">How many travelers?</label>
+          <input type="number" id="travelers" min="1" max="20" inputmode="numeric" required>
+        </div>
+
+        <div class="field">
+          <label for="name">Your name</label>
+          <input type="text" id="name" autocomplete="name" maxlength="80" required>
+        </div>
+
+        <div class="field">
+          <label for="email">Your email</label>
+          <input type="email" id="email" autocomplete="email" maxlength="120" required>
+        </div>
+
+        <div class="field" id="dates-different-row">
+          <label class="check"><input type="checkbox" id="dates-different"> My dates are different</label>
+          <div class="new-dates" id="new-dates" hidden>
+            <div>
+              <label for="new-depart">Leave</label>
+              <input type="date" id="new-depart">
+            </div>
+            <div>
+              <label for="new-return">Return (leave empty for one way)</label>
+              <input type="date" id="new-return">
+            </div>
+            <p class="note">Your agent will confirm the price for your dates.</p>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="message" id="message-label">Anything else? (optional)</label>
+          <textarea id="message" maxlength="2000"></textarea>
+        </div>
+
+        <input type="checkbox" id="botcheck" class="honeypot" tabindex="-1" autocomplete="off">
+
+        <button type="submit" id="send">Send my request</button>
+      </form>
+    </section>
+
+    <section class="thanks" id="thanks" hidden>
+      <h1>Thanks, <span id="thanks-name"></span>. Your request is in.</h1>
+      <p>A Traverse agent will email you at <strong id="thanks-email"></strong> to confirm the trip and the price.</p>
+      <p class="note">If you don't hear back within a day, check your spam folder or email us at info@flytraverse.com.</p>
+    </section>
+  </main>
+
+  <footer>
+    <img src="assets/flight-bridge-mark.png" alt="Flight Bridge">
+    Traverse Tours, powered by Flight Bridge
+  </footer>
+</body>
+</html>
