@@ -1,0 +1,8 @@
+{
+  "name": "flight-bridge-deals",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "TZ=America/Denver node --test tests/*.test.js"
+  }
+}
