@@ -109,6 +109,9 @@ export function buildSubject({ deal, name, email, newDepart, newReturn, leadWord
   return `${SUBJECT_PREFIX}: ${what} (${name}, ${email})${words}`;
 }
 
+// Every request says where it came from. Not shown on the page, only in the email.
+export const LEAD_SOURCE = "Flight Bridge";
+
 // The object posted to Web3Forms. "email" becomes the Reply-To.
 // The other keys show up as labeled lines in the request email.
 export function buildPayload({ accessKey, deal, form, link, leadWords, honeypot }) {
@@ -127,6 +130,7 @@ export function buildPayload({ accessKey, deal, form, link, leadWords, honeypot 
     "Dates are different": newDepart ? `Yes: ${formatRangeWithYear(newDepart, newReturn || null)}` : "No",
     "Anything else": form.message || "(nothing)",
     "Link they came from": link,
+    "Lead source": LEAD_SOURCE,
     ...(honeypot ? { botcheck: true } : {}),
   };
 }

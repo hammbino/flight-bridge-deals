@@ -115,6 +115,7 @@ test("buildPayload carries every field and the full link", () => {
   assert.equal(p["Travelers"], "2");
   assert.equal(p["Deal ID"], "2026-11-slc-cun");
   assert.ok(p["Link they came from"].endsWith(FULL));
+  assert.equal(p["Lead source"], "Flight Bridge");
   assert.equal("botcheck" in p, false);
   assert.equal(JSON.stringify(p).toLowerCase().includes("phone"), false);
 });
@@ -131,6 +132,7 @@ test("buildPayload with new dates and no deal", () => {
   assert.equal(p["Deal"], "Not in link. See message.");
   assert.equal(p["Dates are different"], "Yes: Dec 2 to 9, 2026");
   assert.equal(p["Anything else"], "The Cancun one");
+  assert.equal(p["Lead source"], "Flight Bridge");
 });
 
 test("slugify and buildDealId", () => {
