@@ -135,6 +135,12 @@ export function buildPayload({ accessKey, deal, form, link, leadWords, honeypot 
   };
 }
 
+// The same request, sent with the Flight Bridge key so a copy lands in
+// owner@flight-bridge.com for counting requests. Mauricio's email is unchanged.
+export function buildCopyPayload(payload, copyKey) {
+  return { ...payload, access_key: copyKey };
+}
+
 export function slugify(text) {
   return text.normalize("NFD").replace(/[̀-ͯ]/g, "")
     .toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "")

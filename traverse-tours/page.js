@@ -1,8 +1,9 @@
 // Book Now page: shows the deal from the link and sends the request to
 // Web3Forms, which emails it to the Traverse inbox.
-import { WEB3FORMS_KEY, LEAD_WORDS, INBOX } from "./config.js";
+import { WEB3FORMS_KEY, COPY_KEY, LEAD_WORDS, INBOX } from "./config.js";
 import {
   parseDeal, routeLabel, formatRangeWithYear, priceLine, checkNewDates, buildPayload,
+  buildCopyPayload,
 } from "./deal.js";
 
 const deal = parseDeal(window.location.search);
@@ -92,6 +93,7 @@ async function submit(event) {
     });
     const result = await response.json();
     if (!response.ok || !result.success) throw new Error(result.message || String(response.status));
+    sendCopy(payload);
     $("request").hidden = true;
     $("thanks-name").textContent = form.name;
     $("thanks-email").textContent = form.email;
@@ -109,6 +111,18 @@ async function submit(event) {
   } finally {
     clearTimeout(timer);
   }
+}
+
+// Copy for Flight Bridge, sent only after Mauricio's email went through.
+// It never changes what the customer sees, even if it fails.
+function sendCopy(payload) {
+  if (!COPY_KEY) return;
+  fetch("https://api.web3forms.com/submit", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Accept: "application/json" },
+    body: JSON.stringify(buildCopyPayload(payload, COPY_KEY)),
+    keepalive: true,
+  }).catch((error) => console.warn("Flight Bridge copy failed:", error));
 }
 
 showDeal();

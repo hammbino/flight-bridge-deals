@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
   isIsoDate, formatRange, formatRangeWithYear, formatPrice, parseDeal,
-  priceLine, checkNewDates, buildSubject, buildPayload,
+  priceLine, checkNewDates, buildSubject, buildPayload, buildCopyPayload,
   slugify, buildDealId, checkBuilderFields, buildLink,
 } from "../traverse-tours/deal.js";
 
@@ -155,4 +155,16 @@ test("buildLink round-trips through parseDeal", () => {
   const deal = parseDeal(new URL(buildLink(pkg)).search);
   assert.equal(deal.title, "Cancún Black Friday");
   assert.equal(deal.ret, null);
+});
+
+test("buildCopyPayload swaps only the key", () => {
+  const payload = buildPayload({
+    accessKey: "main-key", deal: parseDeal(FULL),
+    form: { name: "Ann", email: "ann@example.com", travelers: "2", datesDifferent: false, message: "" },
+    link: "https://x", leadWords: "", honeypot: false,
+  });
+  const copy = buildCopyPayload(payload, "copy-key");
+  assert.equal(copy.access_key, "copy-key");
+  assert.equal(payload.access_key, "main-key");
+  assert.deepEqual({ ...copy, access_key: "main-key" }, payload);
 });
