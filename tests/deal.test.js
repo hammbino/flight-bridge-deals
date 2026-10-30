@@ -61,7 +61,7 @@ test("parseDeal reads the flight details for the agent", () => {
 
 test("flightLines shows the fare and both legs", () => {
   assert.deepEqual(flightLines(parseDeal(FLIGHT)), [
-    "Delta Main Classic", "Going: Sat Nov 14, 8:00 AM SLC, nonstop", "Returning: Sat Nov 21, 1:00 PM CUN, nonstop"]);
+    "Delta Main Classic", "Flights: DL 123 SLC-CUN / DL 456 CUN-SLC", "Going: Sat Nov 14, 8:00 AM SLC, nonstop", "Returning: Sat Nov 21, 1:00 PM CUN, nonstop"]);
   assert.deepEqual(flightLines(parseDeal(FULL)), []);
 });
 

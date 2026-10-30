@@ -96,10 +96,11 @@ export function priceLine(deal) {
   return `${formatPrice(deal.price)} per person${found}, subject to change`;
 }
 
-// What the customer sees under the price, e.g. "Southwest Choice" then the two legs.
+// What the customer sees under the price: fare, flight numbers, then the two legs.
 export function flightLines(deal) {
   const fare = deal.fare || deal.airline;
-  return [fare, deal.going && `Going: ${deal.going}`, deal.returning && `Returning: ${deal.returning}`]
+  return [fare, deal.flights && `Flights: ${deal.flights}`,
+    deal.going && `Going: ${deal.going}`, deal.returning && `Returning: ${deal.returning}`]
     .filter(Boolean);
 }
 
