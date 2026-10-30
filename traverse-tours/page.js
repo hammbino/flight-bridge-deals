@@ -3,7 +3,7 @@
 import { WEB3FORMS_KEY, COPY_KEY, LEAD_WORDS, INBOX } from "./config.js";
 import {
   parseDeal, routeLabel, formatRangeWithYear, priceLine, checkNewDates, buildPayload,
-  buildCopyPayload,
+  buildCopyPayload, flightLines,
 } from "./deal.js";
 
 const deal = parseDeal(window.location.search);
@@ -34,6 +34,13 @@ function showDeal() {
   } else {
     $("deal-price").hidden = true;
   }
+  const lines = flightLines(deal);
+  for (const line of lines) {
+    const row = document.createElement("p");
+    row.textContent = line;
+    $("deal-flight").append(row);
+  }
+  $("deal-flight").hidden = lines.length === 0;
 }
 
 function setupDates() {

@@ -55,6 +55,8 @@ h1 { font-size: 30px; }
 .deal-route { font-family: Fraunces, Georgia, serif; font-size: 24px; margin: 0 0 4px; }
 .deal-dates { margin: 0 0 8px; }
 .deal-price { color: var(--muted); font-size: 15px; margin: 0; }
+.deal-flight { margin-top: 10px; font-size: 15px; }
+.deal-flight p { margin: 0 0 4px; }
 
 label { display: block; font-weight: 600; margin: 0 0 6px; }
 

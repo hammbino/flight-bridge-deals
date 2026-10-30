@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
   isIsoDate, formatRange, formatRangeWithYear, formatPrice, parseDeal,
-  priceLine, checkNewDates, buildSubject, buildPayload, buildCopyPayload,
+  priceLine, checkNewDates, buildSubject, buildPayload, buildCopyPayload, flightLines,
   slugify, buildDealId, checkBuilderFields, buildLink,
 } from "../traverse-tours/deal.js";
 
@@ -41,7 +41,28 @@ test("parseDeal reads a full link", () => {
   assert.deepEqual(parseDeal(FULL), {
     id: "2026-11-slc-cun", type: "flight", title: "", from: "SLC", to: "CUN",
     depart: "2026-11-14", ret: "2026-11-21", price: "289", found: "2026-10-13",
+    option: "", airline: "", fare: "", flights: "", going: "", returning: "",
   });
+});
+
+const FLIGHT = FULL + "&opt=Main+deal&air=Delta&fare=Delta+Main+Classic&fl=DL+123+SLC-CUN+%2F+DL+456+CUN-SLC"
+  + "&out=Sat+Nov+14%2C+8%3A00+AM+SLC%2C+nonstop&back=Sat+Nov+21%2C+1%3A00+PM+CUN%2C+nonstop";
+
+test("parseDeal reads the flight details for the agent", () => {
+  const deal = parseDeal(FLIGHT);
+  assert.equal(deal.option, "Main deal");
+  assert.equal(deal.airline, "Delta");
+  assert.equal(deal.fare, "Delta Main Classic");
+  assert.equal(deal.flights, "DL 123 SLC-CUN / DL 456 CUN-SLC");
+  assert.equal(deal.going, "Sat Nov 14, 8:00 AM SLC, nonstop");
+  assert.equal(deal.returning, "Sat Nov 21, 1:00 PM CUN, nonstop");
+  assert.equal(parseDeal(FULL + "&fl=" + "x".repeat(300)).flights.length, 200);
+});
+
+test("flightLines shows the fare and both legs", () => {
+  assert.deepEqual(flightLines(parseDeal(FLIGHT)), [
+    "Delta Main Classic", "Going: Sat Nov 14, 8:00 AM SLC, nonstop", "Returning: Sat Nov 21, 1:00 PM CUN, nonstop"]);
+  assert.deepEqual(flightLines(parseDeal(FULL)), []);
 });
 
 test("parseDeal ignores unknown parameters and lower-case codes", () => {
@@ -116,8 +137,20 @@ test("buildPayload carries every field and the full link", () => {
   assert.equal(p["Deal ID"], "2026-11-slc-cun");
   assert.ok(p["Link they came from"].endsWith(FULL));
   assert.equal(p["Lead source"], "Flight Bridge");
+  assert.equal(p["Airline"], "not in link");
   assert.equal("botcheck" in p, false);
   assert.equal(JSON.stringify(p).toLowerCase().includes("phone"), false);
+});
+
+test("buildPayload carries the flight details", () => {
+  const form = { name: "Jane", email: "jane@example.com", travelers: "2", datesDifferent: false, newDepart: "", newReturn: "", message: "" };
+  const p = buildPayload({ accessKey: "KEY", deal: parseDeal(FLIGHT), form, link: "https://x/", leadWords: "", honeypot: false });
+  assert.equal(p["Option"], "Main deal");
+  assert.equal(p["Airline"], "Delta");
+  assert.equal(p["Fare"], "Delta Main Classic");
+  assert.equal(p["Flights"], "DL 123 SLC-CUN / DL 456 CUN-SLC");
+  assert.equal(p["Going"], "Sat Nov 14, 8:00 AM SLC, nonstop");
+  assert.equal(p["Returning"], "Sat Nov 21, 1:00 PM CUN, nonstop");
 });
 
 test("buildPayload sends botcheck true only when the honeypot is checked", () => {

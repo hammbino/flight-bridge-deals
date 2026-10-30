@@ -10,6 +10,11 @@ const AIRPORT = /^[A-Z]{3}$/;
 const ISO_DATE = /^(\d{4})-(\d{2})-(\d{2})$/;
 const PRICE = /^\d{1,6}(\.\d{2})?$/;
 const TITLE_MAX = 80;
+const FLIGHT_MAX = 200;
+// Flight details for the agent, read from the link. Plain text, shown with textContent.
+const FLIGHT_FIELDS = {
+  option: "opt", airline: "air", fare: "fare", flights: "fl", going: "out", returning: "back",
+};
 
 // Dates stay as "YYYY-MM-DD" strings. Turning them into Date objects for
 // display would shift them by a day in US time zones.
@@ -65,6 +70,8 @@ export function parseDeal(search) {
   const ret = get("return");
   const price = get("price");
   const found = get("found");
+  const flight = {};
+  for (const [name, key] of Object.entries(FLIGHT_FIELDS)) flight[name] = get(key).slice(0, FLIGHT_MAX);
   return {
     id: get("deal").slice(0, 60),
     type,
@@ -75,6 +82,7 @@ export function parseDeal(search) {
     ret: isIsoDate(ret) && ret >= depart ? ret : null,
     price: PRICE.test(price) ? price : null,
     found: isIsoDate(found) ? found : null,
+    ...flight,
   };
 }
 
@@ -86,6 +94,13 @@ export function routeLabel(deal) {
 export function priceLine(deal) {
   const found = deal.found ? `, as found on ${shortDate(deal.found)}` : "";
   return `${formatPrice(deal.price)} per person${found}, subject to change`;
+}
+
+// What the customer sees under the price, e.g. "Southwest Choice" then the two legs.
+export function flightLines(deal) {
+  const fare = deal.fare || deal.airline;
+  return [fare, deal.going && `Going: ${deal.going}`, deal.returning && `Returning: ${deal.returning}`]
+    .filter(Boolean);
 }
 
 export function checkNewDates(newDepart, newReturn, today) {
@@ -127,6 +142,12 @@ export function buildPayload({ accessKey, deal, form, link, leadWords, honeypot 
     "Deal": deal ? `${routeLabel(deal)}, ${formatRangeWithYear(deal.depart, deal.ret)}` : "Not in link. See message.",
     "Deal ID": deal && deal.id ? deal.id : "none",
     "Price": deal && deal.price ? priceLine(deal) : "not in link",
+    "Option": (deal && deal.option) || "not in link",
+    "Airline": (deal && deal.airline) || "not in link",
+    "Fare": (deal && deal.fare) || "not in link",
+    "Flights": (deal && deal.flights) || "not in link",
+    "Going": (deal && deal.going) || "not in link",
+    "Returning": (deal && deal.returning) || (deal && !deal.ret ? "one way" : "not in link"),
     "Dates are different": newDepart ? `Yes: ${formatRangeWithYear(newDepart, newReturn || null)}` : "No",
     "Anything else": form.message || "(nothing)",
     "Link they came from": link,
