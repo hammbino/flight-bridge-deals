@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Get more deals | Traverse Tours</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600&family=Instrument+Sans:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    main { max-width: 720px; }
+
+    .hero h1 { font-size: 40px; line-height: 1.1; margin-bottom: 14px; }
+    .hero .intro { font-size: 19px; max-width: 34em; }
+
+    .hero-cta { display: flex; align-items: center; gap: 20px; margin: 0 0 28px; flex-wrap: wrap; }
+    .hero-cta .button { width: auto; padding: 14px 26px; }
+    .see { color: var(--teal); font-weight: 600; }
+
+    /* Black Friday note */
+    .early {
+      background: var(--teal);
+      color: #fff;
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin: 0 0 36px;
+    }
+    .early p { margin: 0; }
+    .early strong { font-family: Fraunces, Georgia, serif; font-weight: 500; font-size: 20px; display: block; margin-bottom: 2px; }
+
+    /* Your week */
+    .week { margin-bottom: 40px; }
+    .week h2 { font-size: 26px; }
+    .plans {
+      display: inline-flex;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 4px;
+      margin: 4px 0 18px;
+    }
+    .plans button {
+      width: auto;
+      background: transparent;
+      color: var(--muted);
+      border-radius: 999px;
+      padding: 8px 20px;
+      font-weight: 600;
+    }
+    .plans button[aria-pressed="true"] { background: var(--sage); color: #fff; }
+    .plans button:focus-visible, .button:focus-visible, summary:focus-visible { outline: 3px solid var(--teal); outline-offset: 2px; }
+
+    .days {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .day {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      min-height: 132px;
+      padding: 12px 10px;
+      display: flex;
+      flex-direction: column;
+      transition: background-color .2s, border-color .2s;
+    }
+    .day b { font-weight: 600; color: var(--muted); font-size: 15px; }
+    .day .mail { margin-top: 12px; font-size: 14px; line-height: 1.35; color: var(--ink); }
+    .day .mail::before {
+      content: "";
+      display: block;
+      width: 24px; height: 18px;
+      margin-bottom: 8px;
+      background: currentColor;
+      -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 18' fill='none' stroke='black' stroke-width='2' stroke-linejoin='round'%3E%3Crect x='1' y='1' width='22' height='16' rx='2'/%3E%3Cpath d='M2 2l10 8 10-8'/%3E%3C/svg%3E") center / contain no-repeat;
+              mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 18' fill='none' stroke='black' stroke-width='2' stroke-linejoin='round'%3E%3Crect x='1' y='1' width='22' height='16' rx='2'/%3E%3Cpath d='M2 2l10 8 10-8'/%3E%3C/svg%3E") center / contain no-repeat;
+    }
+    .day.on { background: #EEF3F0; border-color: var(--sage); }
+    .day.on .mail { color: var(--teal); font-weight: 600; }
+    .day.off { background: transparent; border-style: dashed; }
+    .day.off .mail { display: none; }
+    .week .note { margin-top: 12px; }
+
+    /* Example deal */
+    .example { margin-bottom: 40px; }
+    .example h2 { font-size: 26px; }
+    .example .deal { padding: 0; overflow: hidden; margin-bottom: 8px; }
+    .example img { display: block; width: 100%; height: 190px; object-fit: cover; }
+    .example .deal-body { padding: 18px 20px 20px; }
+    .example .deal-route { font-size: 22px; }
+    .example .fine { color: #8A8A8A; font-size: 13px; margin: 0; }
+
+    /* Compare */
+    .compare h2 { font-size: 26px; }
+    .table-wrap { background: #fff; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+    table { width: 100%; border-collapse: collapse; font-size: 15px; }
+    th, td { padding: 12px 10px; text-align: center; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th[scope="row"] { text-align: left; font-weight: 400; color: var(--muted); width: 34%; }
+    thead th { font-family: Fraunces, Georgia, serif; font-weight: 500; font-size: 20px; padding-top: 18px; }
+    thead th.pick { background: #EEF3F0; }
+    td.pick { background: #F7FAF8; }
+    .yes { color: var(--sage); font-weight: 600; font-size: 18px; }
+    .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+    .no { color: #B9B1A3; font-size: 18px; }
+    .price td { font-weight: 600; color: var(--ink); }
+    .price small { display: block; font-weight: 400; color: var(--muted); font-size: 13px; }
+    tfoot td, tfoot th { border-bottom: 0; padding-bottom: 18px; }
+    tfoot .button { padding: 12px 8px; font-size: 15px; }
+    tfoot .button.quiet { background: #fff; color: var(--teal); border: 1px solid var(--line); }
+    .compare .note { margin: 12px 0 40px; }
+
+    /* Questions */
+    .faq h2 { font-size: 26px; }
+    details { border-top: 1px solid var(--line); padding: 14px 0; }
+    details:last-of-type { border-bottom: 1px solid var(--line); }
+    summary { cursor: pointer; font-weight: 600; }
+    details p { margin: 8px 0 0; color: var(--muted); }
+    .faq a { color: var(--teal); }
+
+    @media (max-width: 560px) {
+      .hero h1 { font-size: 32px; }
+      .days { gap: 5px; }
+      .day { min-height: 116px; padding: 10px 6px; }
+      .day .mail { font-size: 12px; }
+      th, td { padding: 10px 5px; font-size: 13px; }
+      thead th { font-size: 16px; }
+      tfoot .button { font-size: 13px; padding: 10px 2px; white-space: nowrap; }
+      th[scope="row"] { width: 31%; }
+    }
+    @media (prefers-reduced-motion: reduce) { .day { transition: none; } }
+  </style>
+</head>
+<body>
+  <header class="band">
+    <img src="../assets/traverse-logo.png" alt="Traverse Tours">
+  </header>
+
+  <main>
+    <section class="hero">
+      <h1>More trips worth taking, sent to you each week.</h1>
+      <p class="intro">Our free list gets one flight deal from Salt Lake City every Wednesday. Members get more: extra flight deals twice a week, and with VIP, whole trips put together for you. A real Traverse agent books every one.</p>
+      <div class="hero-cta">
+        <a class="button" href="https://traverse-tours.kit.com/products/basic">Get Basic for $69 a year</a>
+        <a class="see" href="#cmp-h">Compare all plans</a>
+      </div>
+    </section>
+
+    <div class="early">
+      <p><strong>Black Friday starts early for members.</strong>
+      Join Basic or VIP by Wednesday, November 25, and each Black Friday deal reaches your inbox an hour before we post it anywhere else.</p>
+    </div>
+
+    <section class="week" aria-labelledby="week-h">
+      <h2 id="week-h">What lands in your inbox</h2>
+      <div class="plans" role="group" aria-label="Choose a plan">
+        <button type="button" data-plan="free" aria-pressed="false">Free</button>
+        <button type="button" data-plan="basic" aria-pressed="true">Basic</button>
+        <button type="button" data-plan="vip" aria-pressed="false">VIP</button>
+      </div>
+      <ol class="days" aria-live="polite">
+        <li class="day" data-day="mon"><b>Mon</b><span class="mail"></span></li>
+        <li class="day" data-day="tue"><b>Tue</b><span class="mail"></span></li>
+        <li class="day" data-day="wed"><b>Wed</b><span class="mail"></span></li>
+        <li class="day" data-day="thu"><b>Thu</b><span class="mail"></span></li>
+        <li class="day" data-day="fri"><b>Fri</b><span class="mail"></span></li>
+      </ol>
+      <p class="note" id="week-note"></p>
+    </section>
+
+    <section class="example" aria-labelledby="ex-h">
+      <h2 id="ex-h">Here's one we sent</h2>
+      <div class="deal">
+        <img src="https://images.unsplash.com/photo-1641353190354-a1d4c14df4da?w=1200&h=400&q=80&fm=jpg&fit=crop" alt="Downtown San Diego across the bay from Coronado beach">
+        <div class="deal-body">
+          <p class="deal-route">Salt Lake City to San Diego</p>
+          <p class="deal-dates">Thu, Dec 3 to Mon, Dec 7, nonstop on Southwest</p>
+          <p class="deal-price"><strong>$299 round trip</strong>, main cabin, on December Nights weekend in Balboa Park.</p>
+        </div>
+      </div>
+      <p class="fine">Sent November 4. Prices are subject to availability and not guaranteed until booked.</p>
+    </section>
+
+    <section class="compare" aria-labelledby="cmp-h">
+      <h2 id="cmp-h">Pick your plan</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <td></td>
+              <th scope="col">Free</th>
+              <th scope="col" class="pick">Basic</th>
+              <th scope="col">VIP</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">The Wednesday deal</th>
+              <td class="yes"><span aria-hidden="true">✓</span><span class="sr">Yes</span></td><td class="yes pick"><span aria-hidden="true">✓</span><span class="sr">Yes</span></td><td class="yes"><span aria-hidden="true">✓</span><span class="sr">Yes</span></td>
+            </tr>
+            <tr>
+              <th scope="row">More flight deals, Wed and Fri</th>
+              <td class="no"><span aria-hidden="true">–</span><span class="sr">No</span></td><td class="yes pick"><span aria-hidden="true">✓</span><span class="sr">Yes</span></td><td class="yes"><span aria-hidden="true">✓</span><span class="sr">Yes</span></td>
+            </tr>
+            <tr>
+              <th scope="row">Package trips every Monday</th>
+              <td class="no"><span aria-hidden="true">–</span><span class="sr">No</span></td><td class="no pick"><span aria-hidden="true">–</span><span class="sr">No</span></td><td class="yes"><span aria-hidden="true">✓</span><span class="sr">Yes</span></td>
+            </tr>
+            <tr>
+              <th scope="row">Black Friday deals early</th>
+              <td class="no"><span aria-hidden="true">–</span><span class="sr">No</span></td><td class="yes pick"><span aria-hidden="true">✓</span><span class="sr">Yes</span></td><td class="yes"><span aria-hidden="true">✓</span><span class="sr">Yes</span></td>
+            </tr>
+            <tr>
+              <th scope="row">A real agent books it</th>
+              <td class="yes"><span aria-hidden="true">✓</span><span class="sr">Yes</span></td><td class="yes pick"><span aria-hidden="true">✓</span><span class="sr">Yes</span></td><td class="yes"><span aria-hidden="true">✓</span><span class="sr">Yes</span></td>
+            </tr>
+            <tr class="price">
+              <th scope="row">Price</th>
+              <td>$0</td>
+              <td class="pick">$69 a year<small>or $7.99 a month</small></td>
+              <td>$129 a year<small>or $14.99 a month</small></td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td></td>
+              <td><a class="button quiet" href="https://traverse-tours.kit.com/ef63842b8f">Join free</a></td>
+              <td class="pick"><a class="button" href="https://traverse-tours.kit.com/products/basic">Get Basic</a></td>
+              <td><a class="button" href="https://traverse-tours.kit.com/products/vip">Get VIP</a></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      <p class="note">Already on the free list? You keep it. Paid plans add to it. Cancel anytime.</p>
+    </section>
+
+    <section class="faq" aria-labelledby="faq-h">
+      <h2 id="faq-h">Questions</h2>
+      <details>
+        <summary>Who books the trip?</summary>
+        <p>A Traverse Tours agent in Ogden. Tap Book Now on any deal and they reach out to you, book it, and stay your contact before and after you fly.</p>
+      </details>
+      <details>
+        <summary>What kind of flights do you send?</summary>
+        <p>Main cabin fares from Salt Lake City with real dates and a real airline. Never basic economy.</p>
+      </details>
+      <details>
+        <summary>Can I cancel?</summary>
+        <p>Yes, anytime. You go back to the free Wednesday deal.</p>
+      </details>
+      <details>
+        <summary>Already on Basic and want VIP?</summary>
+        <p>Email <a href="mailto:info@flytraverse.com">info@flytraverse.com</a> and we'll talk you through it.</p>
+      </details>
+    </section>
+  </main>
+
+  <footer>
+    <img src="../assets/flight-bridge-mark.png" alt="Flight Bridge">
+    Traverse Tours, powered by Flight Bridge
+  </footer>
+
+  <script>
+    const WEEK = {
+      free:  { wed: "The Wednesday deal" },
+      basic: { wed: "Flight deals, plus the Wednesday deal", fri: "More flight deals for the weekend" },
+      vip:   { mon: "Package trips", wed: "Flight deals, plus the Wednesday deal", fri: "More flight deals for the weekend" }
+    };
+    const NOTE = {
+      free: "One email a week, on Wednesday.",
+      basic: "Two emails a week. Friday's lands in time to talk it over this weekend.",
+      vip: "Three emails a week, starting each Monday with a trip to plan."
+    };
+    const buttons = document.querySelectorAll(".plans button");
+    function show(plan) {
+      buttons.forEach(b => b.setAttribute("aria-pressed", String(b.dataset.plan === plan)));
+      document.querySelectorAll(".day").forEach(li => {
+        const text = WEEK[plan][li.dataset.day];
+        li.classList.toggle("on", Boolean(text));
+        li.classList.toggle("off", !text);
+        li.querySelector(".mail").textContent = text || "";
+      });
+      document.getElementById("week-note").textContent = NOTE[plan];
+    }
+    buttons.forEach(b => b.addEventListener("click", () => show(b.dataset.plan)));
+    show("basic");
+  </script>
+</body>
+</html>
