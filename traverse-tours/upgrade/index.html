@@ -12,12 +12,21 @@
   <style>
     main { max-width: 720px; }
 
+    /* Phases: an element with data-phases shows only in the phases it lists.
+       pre = until Thu 11-26 (Basic only), bf = Fri 11-27 to Mon 11-30, post = from Tue 12-01. */
+    body[data-phase="pre"]  [data-phases]:not([data-phases~="pre"]),
+    body[data-phase="bf"]   [data-phases]:not([data-phases~="bf"]),
+    body[data-phase="post"] [data-phases]:not([data-phases~="post"]) { display: none; }
+
     .hero h1 { font-size: 40px; line-height: 1.1; margin-bottom: 14px; }
     .hero .intro { font-size: 19px; max-width: 34em; }
 
     .hero-cta { display: flex; align-items: center; gap: 20px; margin: 0 0 28px; flex-wrap: wrap; }
     .hero-cta .button { width: auto; padding: 14px 26px; }
     .see { color: var(--teal); font-weight: 600; }
+    .code { font-weight: 600; letter-spacing: .02em; }
+    .hero .alt { margin: -14px 0 28px; color: var(--muted); }
+    .hero .alt a { color: var(--teal); font-weight: 600; }
 
     /* Black Friday note */
     .early {
@@ -28,6 +37,8 @@
       margin: 0 0 36px;
     }
     .early p { margin: 0; }
+    .early p + p { margin-top: 10px; }
+    .early a { color: #fff; }
     .early strong { font-family: Fraunces, Georgia, serif; font-weight: 500; font-size: 20px; display: block; margin-bottom: 2px; }
 
     /* Your week */
@@ -98,15 +109,15 @@
     .example .deal-route { font-size: 22px; }
     .example .fine { color: #8A8A8A; font-size: 13px; margin: 0; }
 
-    /* Compare */
+    /* Compare. The highlighted column is Basic, except VIP over Black Friday. */
     .compare h2 { font-size: 26px; }
     .table-wrap { background: #fff; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
     table { width: 100%; border-collapse: collapse; font-size: 15px; }
     th, td { padding: 12px 10px; text-align: center; border-bottom: 1px solid var(--line); vertical-align: top; }
     th[scope="row"] { text-align: left; font-weight: 400; color: var(--muted); width: 34%; }
     thead th { font-family: Fraunces, Georgia, serif; font-weight: 500; font-size: 20px; padding-top: 18px; }
-    thead th.pick { background: #EEF3F0; }
-    td.pick { background: #F7FAF8; }
+    body:not([data-phase="bf"]) td.col-basic, body[data-phase="bf"] td.col-vip { background: #F7FAF8; }
+    body:not([data-phase="bf"]) th.col-basic, body[data-phase="bf"] th.col-vip { background: #EEF3F0; }
     .yes { color: var(--sage); font-weight: 600; font-size: 18px; }
     .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
     .no { color: #B9B1A3; font-size: 18px; }
@@ -138,13 +149,45 @@
     @media (prefers-reduced-motion: reduce) { .day { transition: none; } }
   </style>
 </head>
-<body>
+<body data-phase="pre">
+  <script>
+    // Pick the phase by today's date in Mountain Time. ?phase=pre|bf|post previews one.
+    (function () {
+      const ask = new URLSearchParams(location.search).get("phase");
+      let phase = ["pre", "bf", "post"].includes(ask) ? ask : null;
+      if (!phase) {
+        const today = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Denver" }).format(new Date());
+        phase = today < "2026-11-27" ? "pre" : today <= "2026-11-30" ? "bf" : "post";
+      }
+      document.body.dataset.phase = phase;
+    })();
+  </script>
+
   <header class="band">
     <img src="../assets/traverse-logo.png" alt="Traverse Tours">
   </header>
 
   <main>
-    <section class="hero">
+    <section class="hero" data-phases="pre">
+      <h1>Get more trips from Salt Lake City, picked for you.</h1>
+      <p class="intro">Everyone on our free list gets one flight deal every Wednesday. Basic adds several hand-picked flight deals every Tuesday and Friday. A real Traverse agent books every one.</p>
+      <div class="hero-cta">
+        <a class="button" href="https://traverse-tours.kit.com/products/basic">Get Basic for $69 a year</a>
+        <a class="see" href="#cmp-h">Compare plans</a>
+      </div>
+    </section>
+
+    <section class="hero" data-phases="bf">
+      <h1>Black Friday: a full year of VIP for $69.</h1>
+      <p class="intro">Through Monday, November 30, VIP costs the same as Basic. You get a package trip to plan every Monday, several hand-picked flight deals every Tuesday and Friday, and the free deal every Wednesday. A real Traverse agent books every one.</p>
+      <div class="hero-cta">
+        <a class="button" href="https://traverse-tours.kit.com/products/vip">Get VIP for $69 a year</a>
+        <a class="see" href="#cmp-h">Compare plans</a>
+      </div>
+      <p class="alt">Use code <span class="code bf-code"></span> at checkout and choose Yearly. Rather pay monthly? <a href="https://traverse-tours.kit.com/products/basic">Basic is $7.99 a month</a>.</p>
+    </section>
+
+    <section class="hero" data-phases="post">
       <h1>Get more trips from Salt Lake City, picked for you.</h1>
       <p class="intro">Everyone on our free list gets one flight deal every Wednesday. Basic adds several hand-picked flight deals every Tuesday and Friday. VIP adds a package trip every Monday on top of that. A real Traverse agent books every one.</p>
       <div class="hero-cta">
@@ -153,9 +196,15 @@
       </div>
     </section>
 
-    <div class="early">
+    <div class="early" data-phases="pre">
       <p><strong>Black Friday starts early for members.</strong>
-      Join Basic or VIP by Wednesday, November 25, and each Black Friday deal reaches your inbox an hour before we post it anywhere else.</p>
+      Join Basic by Wednesday, November 25, and each Black Friday deal reaches your inbox an hour before we post it anywhere else.</p>
+    </div>
+
+    <div class="early" data-phases="bf">
+      <p><strong>Already on Basic?</strong>
+      You don't need to buy anything. Email <a href="mailto:info@flytraverse.com">info@flytraverse.com</a> by Monday, November 30, and we'll move you up to VIP at no extra cost.</p>
+      <p>Members get each Black Friday deal an hour before we post it anywhere else.</p>
     </div>
 
     <section class="week" aria-labelledby="week-h">
@@ -163,7 +212,7 @@
       <div class="plans" role="group" aria-label="Choose a plan">
         <button type="button" data-plan="free" aria-pressed="false">Free</button>
         <button type="button" data-plan="basic" aria-pressed="true">Basic</button>
-        <button type="button" data-plan="vip" aria-pressed="false">VIP</button>
+        <button type="button" data-plan="vip" aria-pressed="false" data-phases="bf post">VIP</button>
       </div>
       <ol class="days" aria-live="polite">
         <li class="day" data-day="mon"><b>Mon</b><span class="mail"></span></li>
@@ -187,7 +236,7 @@
         </div>
       </div>
       <p class="fine">Sent November 4. Prices are subject to availability and not guaranteed until booked.</p>
-      <p class="note">VIP packages put the flight and the stay together, like an all-inclusive resort in Mexico or a cruise with the flight to the port, ready for your agent to book.</p>
+      <p class="note" data-phases="bf post">VIP packages put the flight and the stay together, like an all-inclusive resort in Mexico or a cruise with the flight to the port, ready for your agent to book.</p>
     </section>
 
     <section class="compare" aria-labelledby="cmp-h">
@@ -198,44 +247,45 @@
             <tr>
               <td></td>
               <th scope="col">Free</th>
-              <th scope="col" class="pick">Basic</th>
-              <th scope="col">VIP</th>
+              <th scope="col" class="col-basic">Basic</th>
+              <th scope="col" class="col-vip" data-phases="bf post">VIP</th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <th scope="row">The free weekly deal (Wednesday)</th>
-              <td class="yes"><span aria-hidden="true">✓</span><span class="sr">Yes</span></td><td class="yes pick"><span aria-hidden="true">✓</span><span class="sr">Yes</span></td><td class="yes"><span aria-hidden="true">✓</span><span class="sr">Yes</span></td>
+              <td class="yes"><span aria-hidden="true">✓</span><span class="sr">Yes</span></td><td class="yes col-basic"><span aria-hidden="true">✓</span><span class="sr">Yes</span></td><td class="yes col-vip" data-phases="bf post"><span aria-hidden="true">✓</span><span class="sr">Yes</span></td>
             </tr>
             <tr>
               <th scope="row">Several hand-picked flight deals, Tuesday and Friday</th>
-              <td class="no"><span aria-hidden="true">–</span><span class="sr">No</span></td><td class="yes pick"><span aria-hidden="true">✓</span><span class="sr">Yes</span></td><td class="yes"><span aria-hidden="true">✓</span><span class="sr">Yes</span></td>
+              <td class="no"><span aria-hidden="true">–</span><span class="sr">No</span></td><td class="yes col-basic"><span aria-hidden="true">✓</span><span class="sr">Yes</span></td><td class="yes col-vip" data-phases="bf post"><span aria-hidden="true">✓</span><span class="sr">Yes</span></td>
             </tr>
-            <tr>
+            <tr data-phases="bf post">
               <th scope="row">A package trip every Monday</th>
-              <td class="no"><span aria-hidden="true">–</span><span class="sr">No</span></td><td class="no pick"><span aria-hidden="true">–</span><span class="sr">No</span></td><td class="yes"><span aria-hidden="true">✓</span><span class="sr">Yes</span></td>
+              <td class="no"><span aria-hidden="true">–</span><span class="sr">No</span></td><td class="no col-basic"><span aria-hidden="true">–</span><span class="sr">No</span></td><td class="yes col-vip"><span aria-hidden="true">✓</span><span class="sr">Yes</span></td>
             </tr>
-            <tr>
+            <tr data-phases="pre bf">
               <th scope="row">Black Friday deals early</th>
-              <td class="no"><span aria-hidden="true">–</span><span class="sr">No</span></td><td class="yes pick"><span aria-hidden="true">✓</span><span class="sr">Yes</span></td><td class="yes"><span aria-hidden="true">✓</span><span class="sr">Yes</span></td>
+              <td class="no"><span aria-hidden="true">–</span><span class="sr">No</span></td><td class="yes col-basic"><span aria-hidden="true">✓</span><span class="sr">Yes</span></td><td class="yes col-vip" data-phases="bf post"><span aria-hidden="true">✓</span><span class="sr">Yes</span></td>
             </tr>
             <tr>
               <th scope="row">A real agent books it</th>
-              <td class="yes"><span aria-hidden="true">✓</span><span class="sr">Yes</span></td><td class="yes pick"><span aria-hidden="true">✓</span><span class="sr">Yes</span></td><td class="yes"><span aria-hidden="true">✓</span><span class="sr">Yes</span></td>
+              <td class="yes"><span aria-hidden="true">✓</span><span class="sr">Yes</span></td><td class="yes col-basic"><span aria-hidden="true">✓</span><span class="sr">Yes</span></td><td class="yes col-vip" data-phases="bf post"><span aria-hidden="true">✓</span><span class="sr">Yes</span></td>
             </tr>
             <tr class="price">
               <th scope="row">Price</th>
               <td>$0</td>
-              <td class="pick">$69 a year<small>or $7.99 a month</small></td>
-              <td>$129 a year<small>or $14.99 a month</small></td>
+              <td class="col-basic">$69 a year<small>or $7.99 a month</small></td>
+              <td class="col-vip" data-phases="bf">$69 for the first year<small>Black Friday price, through Nov 30</small></td>
+              <td class="col-vip" data-phases="post">$129 a year<small>or $14.99 a month</small></td>
             </tr>
           </tbody>
           <tfoot>
             <tr>
               <td></td>
               <td><a class="button quiet" href="https://traverse-tours.kit.com/ef63842b8f">Join free</a></td>
-              <td class="pick"><a class="button" href="https://traverse-tours.kit.com/products/basic">Get Basic</a></td>
-              <td><a class="button" href="https://traverse-tours.kit.com/products/vip">Get VIP</a></td>
+              <td class="col-basic"><a class="button" href="https://traverse-tours.kit.com/products/basic">Get Basic</a></td>
+              <td class="col-vip" data-phases="bf post"><a class="button" href="https://traverse-tours.kit.com/products/vip">Get VIP</a></td>
             </tr>
           </tfoot>
         </table>
@@ -257,7 +307,11 @@
         <summary>Can I cancel?</summary>
         <p>Yes, anytime. You keep the free weekly deal every Wednesday.</p>
       </details>
-      <details>
+      <details data-phases="bf">
+        <summary>Already on Basic and want VIP?</summary>
+        <p>You don't need to buy anything. Email <a href="mailto:info@flytraverse.com">info@flytraverse.com</a> by Monday, November 30, and we'll move you up to VIP at no extra cost.</p>
+      </details>
+      <details data-phases="post">
         <summary>Already on Basic and want VIP?</summary>
         <p>Email <a href="mailto:info@flytraverse.com">info@flytraverse.com</a> and we'll talk you through it.</p>
       </details>
@@ -270,6 +324,11 @@
   </footer>
 
   <script>
+    // Black Friday VIP code ($60 off VIP yearly). Must match the code created in Kit.
+    const BF_CODE = "BLACKFRIDAY";
+    document.querySelectorAll(".bf-code").forEach(el => { el.textContent = BF_CODE; });
+
+    const phase = document.body.dataset.phase;
     const WEEK = {
       free:  { wed: "The free weekly deal" },
       basic: { tue: "Several hand-picked flight deals", wed: "The free weekly deal", fri: "More flight deals for the weekend" },
@@ -283,7 +342,7 @@
     const CTA = {
       free:  { text: "Join the free list", href: "https://traverse-tours.kit.com/ef63842b8f", quiet: true },
       basic: { text: "Get Basic for $69 a year", href: "https://traverse-tours.kit.com/products/basic" },
-      vip:   { text: "Get VIP for $129 a year", href: "https://traverse-tours.kit.com/products/vip" }
+      vip:   { text: phase === "bf" ? "Get VIP for $69 a year" : "Get VIP for $129 a year", href: "https://traverse-tours.kit.com/products/vip" }
     };
     const buttons = document.querySelectorAll(".plans button");
     function show(plan) {
@@ -301,7 +360,7 @@
       cta.classList.toggle("quiet", Boolean(CTA[plan].quiet));
     }
     buttons.forEach(b => b.addEventListener("click", () => show(b.dataset.plan)));
-    show("basic");
+    show(phase === "bf" ? "vip" : "basic");
   </script>
 </body>
 </html>
