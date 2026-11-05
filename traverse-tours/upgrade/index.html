@@ -86,6 +86,8 @@
     .day.off { background: transparent; border-style: dashed; }
     .day.off .mail { display: none; }
     .week .note { margin-top: 12px; }
+    .week-cta { width: auto; padding: 14px 26px; margin-top: 8px; }
+    .week-cta.quiet { background: #fff; color: var(--teal); border: 1px solid var(--line); }
 
     /* Example deal */
     .example { margin-bottom: 40px; }
@@ -143,8 +145,8 @@
 
   <main>
     <section class="hero">
-      <h1>More trips worth taking, sent to you each week.</h1>
-      <p class="intro">Our free list gets one flight deal from Salt Lake City every Wednesday. Members get more: extra flight deals twice a week, and with VIP, whole trips put together for you. A real Traverse agent books every one.</p>
+      <h1>Get more trips from Salt Lake City, picked for you.</h1>
+      <p class="intro">Everyone on our free list gets one flight deal every Wednesday. Basic adds several hand-picked flight deals every Tuesday and Friday. VIP adds a package trip every Monday on top of that. A real Traverse agent books every one.</p>
       <div class="hero-cta">
         <a class="button" href="https://traverse-tours.kit.com/products/basic">Get Basic for $69 a year</a>
         <a class="see" href="#cmp-h">Compare all plans</a>
@@ -171,6 +173,7 @@
         <li class="day" data-day="fri"><b>Fri</b><span class="mail"></span></li>
       </ol>
       <p class="note" id="week-note"></p>
+      <a class="button week-cta" id="week-cta" href="https://traverse-tours.kit.com/products/basic">Get Basic for $69 a year</a>
     </section>
 
     <section class="example" aria-labelledby="ex-h">
@@ -184,6 +187,7 @@
         </div>
       </div>
       <p class="fine">Sent November 4. Prices are subject to availability and not guaranteed until booked.</p>
+      <p class="note">VIP packages put the flight and the stay together, like an all-inclusive resort in Mexico or a cruise with the flight to the port, ready for your agent to book.</p>
     </section>
 
     <section class="compare" aria-labelledby="cmp-h">
@@ -200,15 +204,15 @@
           </thead>
           <tbody>
             <tr>
-              <th scope="row">The Wednesday deal</th>
+              <th scope="row">The free weekly deal (Wednesday)</th>
               <td class="yes"><span aria-hidden="true">✓</span><span class="sr">Yes</span></td><td class="yes pick"><span aria-hidden="true">✓</span><span class="sr">Yes</span></td><td class="yes"><span aria-hidden="true">✓</span><span class="sr">Yes</span></td>
             </tr>
             <tr>
-              <th scope="row">More flight deals, Wed and Fri</th>
+              <th scope="row">Several hand-picked flight deals, Tuesday and Friday</th>
               <td class="no"><span aria-hidden="true">–</span><span class="sr">No</span></td><td class="yes pick"><span aria-hidden="true">✓</span><span class="sr">Yes</span></td><td class="yes"><span aria-hidden="true">✓</span><span class="sr">Yes</span></td>
             </tr>
             <tr>
-              <th scope="row">Package trips every Monday</th>
+              <th scope="row">A package trip every Monday</th>
               <td class="no"><span aria-hidden="true">–</span><span class="sr">No</span></td><td class="no pick"><span aria-hidden="true">–</span><span class="sr">No</span></td><td class="yes"><span aria-hidden="true">✓</span><span class="sr">Yes</span></td>
             </tr>
             <tr>
@@ -251,7 +255,7 @@
       </details>
       <details>
         <summary>Can I cancel?</summary>
-        <p>Yes, anytime. You go back to the free Wednesday deal.</p>
+        <p>Yes, anytime. You keep the free weekly deal every Wednesday.</p>
       </details>
       <details>
         <summary>Already on Basic and want VIP?</summary>
@@ -267,14 +271,19 @@
 
   <script>
     const WEEK = {
-      free:  { wed: "The Wednesday deal" },
-      basic: { wed: "Flight deals, plus the Wednesday deal", fri: "More flight deals for the weekend" },
-      vip:   { mon: "Package trips", wed: "Flight deals, plus the Wednesday deal", fri: "More flight deals for the weekend" }
+      free:  { wed: "The free weekly deal" },
+      basic: { tue: "Several hand-picked flight deals", wed: "The free weekly deal", fri: "More flight deals for the weekend" },
+      vip:   { mon: "A package trip to plan", tue: "Several hand-picked flight deals", wed: "The free weekly deal", fri: "More flight deals for the weekend" }
     };
     const NOTE = {
-      free: "One email a week, on Wednesday.",
-      basic: "Two emails a week. Friday's lands in time to talk it over this weekend.",
-      vip: "Three emails a week, starting each Monday with a trip to plan."
+      free: "One email a week, every Wednesday.",
+      basic: "Three emails a week. Friday's lands in time to talk it over this weekend.",
+      vip: "Four emails a week, starting each Monday with a full trip to plan."
+    };
+    const CTA = {
+      free:  { text: "Join the free list", href: "https://traverse-tours.kit.com/ef63842b8f", quiet: true },
+      basic: { text: "Get Basic for $69 a year", href: "https://traverse-tours.kit.com/products/basic" },
+      vip:   { text: "Get VIP for $129 a year", href: "https://traverse-tours.kit.com/products/vip" }
     };
     const buttons = document.querySelectorAll(".plans button");
     function show(plan) {
@@ -286,6 +295,10 @@
         li.querySelector(".mail").textContent = text || "";
       });
       document.getElementById("week-note").textContent = NOTE[plan];
+      const cta = document.getElementById("week-cta");
+      cta.textContent = CTA[plan].text;
+      cta.href = CTA[plan].href;
+      cta.classList.toggle("quiet", Boolean(CTA[plan].quiet));
     }
     buttons.forEach(b => b.addEventListener("click", () => show(b.dataset.plan)));
     show("basic");
